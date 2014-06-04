@@ -42,7 +42,7 @@ class ControllerBase
   # use ERB and binding to evaluate templates
   # pass the rendered html to render_content
   def render(template_name)
-    f = File.read("views/#{self.class.to_s.underscore}/#{template_name}.html.erb")
+    f = File.read("views/#{self.class.name.underscore}/#{template_name}.html.erb")
     template = ERB.new(f).result(binding)
     render_content(template, "text/html")
   end
@@ -54,6 +54,7 @@ class ControllerBase
 
   # use this with the router to call action_name (:index, :show, :create...)
   def invoke_action(name)
-    
+    self.send(name)
+    render(name) unless already_built_response?
   end
 end

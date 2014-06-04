@@ -10,7 +10,7 @@ require_relative '../lib/rails_lite'
 server = WEBrick::HTTPServer.new :Port => 8080
 trap('INT') { server.shutdown }
 
-class StatusController < ControllerBase
+class StatusesController < ControllerBase
   def index
     statuses = ["s1", "s2", "s3"]
 
@@ -22,7 +22,7 @@ class StatusController < ControllerBase
   end
 end
 
-class UserController < ControllerBase
+class UsersController < ControllerBase
   def index
     users = ["u1", "u2", "u3"]
 
@@ -32,8 +32,8 @@ end
 
 router = Router.new
 router.draw do
-  get Regexp.new("^/statuses$"), StatusController, :index
-  get Regexp.new("^/users$"), UserController, :index
+  get Regexp.new("^/statuses$"), StatusesController, :new
+  get Regexp.new("^/users$"), UsersController, :index
 
   # uncomment this when you get to route params
   # get Regexp.new("^/statuses/(?<id>\\d+)$"), StatusController, :show

@@ -7,7 +7,9 @@ class Params
   # 3. route params
   def initialize(req, route_params = {})
     @params = req.query_string.nil? ? {} : parse_www_encoded_form(req.query_string)
-    @params = @params.merge(parse_www_encoded_form(req.body)) unless req.body.nil?
+    @params.merge!(parse_www_encoded_form(req.body)) unless req.body.nil?
+    @params.merge!(route_params)
+    @permitted_keys = []
   end
 
   def [](key)
@@ -15,12 +17,16 @@ class Params
   end
 
   def permit(*keys)
+    @permitted_keys.concat([keys])
+    @permitted_keys.flatten!
   end
 
   def require(key)
+    raise Params::AttributeNotFoundError unless @params.keys.include?(key)
   end
 
   def permitted?(key)
+    @permitted_keys.include?(key)
   end
 
   def to_s
